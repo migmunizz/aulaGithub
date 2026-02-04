@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cadastro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: #020617;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .msg {
+      margin-top: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Cadastro</h1>
+
+    <form id="cadastroForm">
+      <input type="text" name="nome" placeholder="Nome" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="password" name="senha" placeholder="Senha" required />
+
+      <button type="submit">Cadastrar</button>
+    </form>
+
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("cadastroForm");
+    const msg = document.getElementById("msg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      msg.innerText = "Enviando...";
+
+      const data = {
+        nome: form.nome.value,
+        email: form.email.value,
+        senha: form.senha.value
+      };
+
+      try {
+        const response = await fetch(
+          "http://localhost:5678/webhook-test/675c7bea-154c-4516-bc90-62163530b20b",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+          msg.innerText = "✅ Cadastro realizado com sucesso!";
+          form.reset();
+        } else {
+          msg.innerText = "❌ Erro: " + result.message;
+        }
+
+      } catch (err) {
+        msg.innerText = "❌ Erro ao conectar com o servidor";
+      }
+    });
+  </script>
+
+</body>
+</html>
